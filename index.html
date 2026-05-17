@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mrima Hills Operations Governance Overview</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            /* Swapped to solid premium green background */
+            background-color: #4da674;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Layout Container Setup */
+        .layout-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            padding: 16px;
+            gap: 16px;
+        }
+
+        /* LEFT SIDEBAR BOX: Blurry White Glassmorphic Frame */
+        .sidebar-box {
+            width: 260px;
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 32px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        /* Text colors adjusted slightly for visibility over green background */
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 4px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-subtitle {
+            font-size: 10px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 32px;
+            letter-spacing: 2px;
+        }
+
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .menu-item {
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffffff;
+            padding: 10px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: none;
+        }
+
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        /* RIGHT MAIN CONTENT BOX: Blurry White Glassmorphic Frame */
+        .main-content-box {
+            flex: 1;
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 32px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        /* TOP STAT ROW: 3 ROUNDED BOXES with Blurry White Frames */
+        .stat-row {
+            display: flex;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .stat-item {
+            flex: 1;
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
+            padding: 14px 18px;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .stat-value.accent {
+            color: #047857;
+        }
+
+        .stat-value.danger {
+            color: #b91c1c;
+        }
+
+        /* HORIZONTAL MIDDLE BAR: Blurry White Frame */
+        .item-list-header {
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            padding: 10px 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .header-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .add-new-btn {
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* MAIN SECTION VIEWPORT SLOT */
+        .viewport-slot {
+            flex: 1;
+            display: flex;
+            gap: 16px;
+            min-height: 0;
+        }
+
+        /* LEFT LIVE DATA READOUT PANEL */
+        .live-data-panel {
+            width: 40%;
+            border: 2px dashed rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            padding: 16px;
+            background-color: rgba(255, 255, 255, 0.85);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .section-subtitle {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e293b;
+            border-left: 4px solid #1e3a8a;
+            padding-left: 8px;
+            margin: 0;
+        }
+
+        .info-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .info-card h4 {
+            margin: 0 0 4px 0;
+            font-size: 12px;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .info-card p {
+            margin: 0;
+            font-size: 11px;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        /* RIGHT HAND MAP CANVAS: Blurry White Frame wrapper */
+        .map-canvas {
+            flex: 1;
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            background-color: #f1f5f9;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        /* INLINE ANIMATIONS FOR EMBEDDED MAP ICONS */
+        @keyframes excavateRoute {
+            0% { transform: translate(250px, 140px) rotate(0deg); }
+            25% { transform: translate(265px, 155px) rotate(45deg); }
+            50% { transform: translate(280px, 145px) rotate(-20deg); }
+            75% { transform: translate(260px, 130px) rotate(-60deg); }
+            100% { transform: translate(250px, 140px) rotate(0deg); }
+        }
+
+        @keyframes logisticsTransit {
+            0% { transform: translate(280px, 160px); }
+            40% { transform: translate(320px, 110px); }
+            70% { transform: translate(360px, 50px); }
+            100% { transform: translate(390px, 20px); }
+        }
+
+        .animated-excavator {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            z-index: 20;
+            animation: excavateRoute 12s infinite ease-in-out;
+        }
+
+        .animated-truck {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            z-index: 20;
+            animation: logisticsTransit 16s infinite linear;
+        }
+
+        /* MAP LEGEND COMPONENT */
+        .map-legend {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 9px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 30;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        /* BOTTOM RIGHT CORNER FIXED ICONS */
+        .fixed-corner-widgets {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            display: flex;
+            gap: 8px;
+            z-index: 40;
+        }
+
+        .widget-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .widget-shield {
+            background-color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            color: #1e3a8a;
+        }
+
+        .widget-help {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: #475569;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="layout-container">
+        <aside class="sidebar-box">
+            <div class="sidebar-title">PrimeTons</div>
+            <div class="sidebar-subtitle">Mrima Hills Operations</div>
+            
+            <ul class="menu-list">
+                <li class="menu-item active">Home</li>
+                <li class="menu-item">About</li>
+                <li class="menu-item">Wallet</li>
+                <li class="menu-item">Settings</li>
+            </ul>
+        </aside>
+
+        <main class="main-content-box">
+            
+            <div class="stat-row">
+                <div class="stat-item">
+                    <span class="stat-label">Total Balance</span>
+                    <span class="stat-value">KES 12,500,000</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Community Royalties</span>
+                    <span class="stat-value accent">KES 3,625,000</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Radiation Density</span>
+                    <span class="stat-value danger">420 mSv/hr</span>
+                </div>
+            </div>
+
+            <div class="item-list-header">
+                <div class="header-title">Kwale County Concession Map Overview</div>
+                <button class="add-new-btn">ADD NEW</button>
+            </div>
+
+            <div class="viewport-slot">
+                
+                <div class="live-data-panel">
+                    <h3 class="section-subtitle">Accessibility & Infrastructure</h3>
+                    <div class="info-card">
+                        <h4>Mombasa Deepwater Proximity</h4>
+                        <p>Located only 70km from Mombasa Port via the Likoni-Ukunda A108 arterial highway Corridor. Allows heavy components to move rapidly without interior logjams.</p>
+                    </div>
+
+                    <h3 class="section-subtitle">Exclusion Zones (Strict Non-Displacement)</h3>
+                    <div class="info-card" style="border-left: 4px solid #ef4444;">
+                        <h4>Kaya Shrines & Sacred Forests</h4>
+                        <p>Absolute extraction ban. Coordinates geofenced. Preserves cultural identity and ancestral heritage of the Mijikenda community with zero physical displacement.</p>
+                    </div>
+                    <div class="info-card" style="border-left: 4px solid #f97316;">
+                        <h4>Ancestral Graves & Civil Households</h4>
+                        <p>1.5km protective buffer perimeter. No mining machinery deployment or deep vibration infrastructure allowed inside these community boundaries.</p>
+                    </div>
+
+                    <h3 class="section-subtitle">Radiation Safety Tools</h3>
+                    <div class="info-card" style="border-left: 4px solid #10b981;">
+                        <h4>RC EnGen Autonomous Vehicles</h4>
+                        <p>Thorium-heavy sectors are strictly barred from manual human entry. Operations are driven by remote autonomous hardware powered by closed-loop RC EnGen infrastructure.</p>
+                    </div>
+                </div>
+
+                <div class="map-canvas">
+                    
+                    <svg class="animated-excavator" viewBox="0 0 24 24" fill="#d97706">
+                        <path d="M19 8h-4V7a3 3 0 0 0-3-3H5a3 3 0 0 0-3 3v10h20V10a2 2 0 0 0-2-2zm-2 7h-2v-2h2v2zm0-4h-2V9h2v2zm-4 4h-2v-2h2v2zm0-4h-2V9h2v2z"/>
+                    </svg>
+                    
+                    <svg class="animated-truck" viewBox="0 0 24 24" fill="#2563eb">
+                        <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm12 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                    </svg>
+
+                    <svg width="100%" height="100%" viewBox="0 0 500 350" style="background-color: #f8fafc;">
+                        <path d="M 380,0 Q 410,120 400,200 T 460,350 L 500,350 L 500,0 Z" fill="#e0f2fe" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="430" y="180" fill="#0284c7" font-size="10" font-weight="bold" transform="rotate(75 430 180)">INDIAN OCEAN</text>
+
+                        <circle cx="410" cy="30" r="10" fill="#3b82f6" opacity="0.3"/>
+                        <circle cx="410" cy="30" r="4" fill="#2563eb"/>
+                        <text x="420" y="34" fill="#1e3a8a" font-size="10" font-weight="bold">Mombasa Port Hub</text>
+
+                        <path d="M 260,150 Q 320,110 360,50 T 410,30" fill="none" stroke="#64748b" stroke-dasharray="4 4" stroke-width="3"/>
+                        <text x="320" y="85" fill="#475569" font-size="8" font-weight="600" transform="rotate(-35 320 85)">A108 Logistics Corridor</text>
+
+                        <polygon points="210,120 300,110 310,180 220,190" fill="#fef08a" stroke="#eab308" stroke-width="2" opacity="0.6"/>
+                        <text x="235" y="170" fill="#854d0e" font-size="10" font-weight="bold">Mrima Hills Site</text>
+
+                        <circle cx="230" cy="135" r="14" fill="#ef4444" opacity="0.4" stroke="#dc2626" stroke-width="1.5"/>
+                        <text x="215" y="138" fill="#991b1b" font-size="7" font-weight="bold">KAYA SHRINE</text>
+
+                        <polygon points="270,125 295,120 290,145 265,145" fill="#f97316" opacity="0.4" stroke="#ea580c" stroke-width="1.5"/>
+                        <text x="268" y="135" fill="#c2410c" font-size="6" font-weight="bold">GRAVES BUFFER</text>
+
+                        <circle cx="250" cy="175" r="12" fill="#ef4444" opacity="0.3" stroke="#dc2626" stroke-width="1"/>
+                        <text x="240" y="177" fill="#991b1b" font-size="6" font-weight="bold">VILLAGE</text>
+
+                        <circle cx="285" cy="165" r="10" fill="#10b981" opacity="0.3"/>
+                        <circle cx="285" cy="165" r="3" fill="#10b981"/>
+                        <text x="275" y="153" fill="#065f46" font-size="7" font-weight="bold">SAFE ZONE ALPHA</text>
+                    </svg>
+
+                    <div class="map-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #fef08a; border: 1px solid #eab308;"></div>
+                            <span>Mrima Hills Concession</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #ef4444;"></div>
+                            <span>Kaya Shrines / Villages (BANNED)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #f97316;"></div>
+                            <span>Graves & Buffer Lines (RESTRICTED)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #10b981;"></div>
+                            <span>Safe RC EnGen Core Points</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="fixed-corner-widgets">
+                <div class="widget-btn widget-shield">🛡️</div>
+                <div class="widget-btn widget-help">?</div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>
